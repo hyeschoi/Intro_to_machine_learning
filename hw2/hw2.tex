@@ -1,0 +1,571 @@
+\documentclass[11pt]{exam}
+\noprintanswers
+\usepackage{amsmath,amssymb,amsthm,bm,hyperref}
+\usepackage[parfill]{parskip}
+\usepackage[margin=1in]{geometry}
+\newtheoremstyle{quest}{\topsep}{\topsep}{}{}{\bfseries}{}{ }{\thmname{#1}\thmnote{ #3}.}
+\theoremstyle{quest}
+\newtheorem*{definition}{Definition}
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{question}{Problem}
+\newtheorem*{exercise}{Exercise}
+\newtheorem*{challengeproblem}{Challenge Problem}
+
+\newcommand{\name}{CS 189: Introduction to Machine Learning}
+\newcommand{\hw}{2}
+\newcommand{\duedate}{February 18, 2016 at 11:59pm}
+
+\title{
+\Large \name
+\\\vspace{10pt}
+\Large Homework \hw
+\\\vspace{10pt}
+\large Due: \duedate}
+\date{}
+\author{}
+
+\markright{\name\hfill Homework \hw\hfill}
+
+%% If you want to define a new command, you can do it like this:
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+
+%% If you want to use a function like ''sin'' or ''cos'', you can do it like this
+%% (we probably won't have much use for this)
+% \DeclareMathOperator{\sin}{sin}   %% just an example (it's already defined)
+
+\begin{document}
+\maketitle
+
+\begin{picture}(0,0)
+\put(0,180){\textbf{Name: Hye Soo Choi} \hspace{6cm} \textbf{Student ID: 23274190}}
+\end{picture}
+\vspace{-1.25in}
+
+% =============================================================
+% Instructions:
+\section*{Instructions}
+\begin{itemize}
+\item Homework 2 is completely a written assignment; no coding involved.
+\item We prefer that you typeset your answers using the \LaTeX{} template on
+  bCourses. If there is not enough space for your answer, you may continue your
+  answer on the next page. Make sure to start each question on a new page.
+\item Neatly handwritten and scanned solutions will also be accepted. Make sure your answers are readable!
+\item Submit a PDF with your answers to the Homework 2 assignment on
+  Gradescope. You should be able to see CS 189/289A on Gradescope when you log
+  in with your bCourses email address. Please make a Piazza post if you have
+  any problems accessing Gradescope.
+\item While submitting to Gradescope, you will have to select the pages
+  containing your answer for each question.
+\item The assignment covers concepts in probability, linear algebra, matrix calculus, and decision theory.
+\item \textbf{Start early. This is a long assignment. Some of the material may not have been covered in lecture;
+you are responsible for finding resources to understand it.}
+\end{itemize}
+
+\newpage
+
+% =============================================================
+
+\begin{question}[1: Expected Value]
+~
+
+A target is made of 3 concentric circles of radii $1/{\sqrt{3}}$, $1$ and
+$\sqrt{3}$ feet. Shots within the inner circle are given 4 points, shots within
+the next ring are given 3 points, and shots within the third ring are given 2
+points. Shots outside the target are given 0 points.
+
+Let $X$ be the distance of the hit from the center (in feet), and let the probability density function
+of $X$ be
+\[
+f(x) =
+  \begin{cases}
+   \frac{2}{\pi (1+x^2)} & x>0 \\
+   0 &  \text{otherwise}
+  \end{cases}
+\]
+What is the expected value of the score of a single shot?
+\end{question}
+\textbf{Solution:}
+%%%%%%%%%% Write your solution to Problem 1 here %%%%%%%%%%%%%%%%%%%%%
+The expected value is calculated as follows:
+\begin{align*}
+& \int_0^{\frac{1}{\sqrt{3}}}  4 \cdot \frac{2}{\pi (1+x^2)} dx + \int_{\frac{1}{\sqrt{3}}}^1  3 \cdot \frac{2}{\pi (1+x^2)} dx + \int_1^{\sqrt{3}}  2 \cdot \frac{2}{\pi (1+x^2)} dx \\
+ =& \int_0^{\frac{\pi}{6}} 4 \cdot \frac{2}{\pi (1+ \tan^2 \theta)} \sec^2 \theta d\theta 
+    + \int_{\frac{\pi}{6}}^{\frac{\pi}{4}} 3 \cdot \frac{2}{\pi (1+ \tan^2 \theta)} \sec^2 \theta d\theta
+    +  \int_{\frac{\pi}{4}}^{\frac{\pi}{3}} 2 \cdot \frac{2}{\pi (1+ \tan^2 \theta)} \sec^2 \theta d\theta\\
+ =&  \int_0^{\frac{\pi}{6}} 4 \cdot 2 d\theta 
+    + \int_{\frac{\pi}{6}}^{\frac{\pi}{4}} 3 \cdot 2 d\theta
+    +  \int_{\frac{\pi}{4}}^{\frac{\pi}{3}} 2 \cdot 2 d\theta\\
+ =& 8 \cdot \frac{\pi}{6} + 6 \cdot \frac{\pi}{12} + 4 \cdot \frac{\pi}{12}\\
+ =& \frac{13}{6} \pi
+\end{align*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+% =============================================================
+
+\begin{question}[2: MLE]
+~
+
+Assume that the random variable $X$ has the exponential distribution
+\[
+f(x;\theta) = \theta e^{-\theta x} \ \ \ \ \ \ \ \ x \geq 0, \theta > 0
+\]
+where $\theta$ is the parameter of the distribution. Use the method of maximum
+likelihood to estimate $\theta$ if 5 observations of $X$ are $x_1 = 0.9$, $x_2 =
+1.7$, $x_3 = 0.4$, $x_4 = 0.3$, and $x_5 = 2.6$, generated i.i.d. (i.e.,
+independent and identically distributed).
+\end{question}
+\textbf{Solution:}
+%%%%%%%%%% Write your solution to Problem 2 here %%%%%%%%%%%%%%%%%%%%%
+\[
+f(x_1,x_2,x_3,x_4,x_5;\theta) = \prod_{i=1}^{5} f(x_i ; \theta) = \theta^5 e^{-\theta \sum_{i=1}^5 x_i} = \theta^5 e^{- 5.9 \theta }
+\]
+\[
+\frac{\partial f(x_1,x_2,x_3,x_4,x_5; \theta)}{\partial \theta} = 5 \cdot \theta^4 e^{-5.9 \theta} - 5.9 \, \theta^5 e^{- 5.9 \theta} = \theta^4 e^{-5.9 \theta}(5 - 5.9\theta)
+\]
+Under the constraint that $\theta > 0$
+\[
+\frac{\partial f(x_1,x_2,x_3,x_4,x_5; \theta)}{\partial \theta} = 0,
+\]
+which is equivalent to 
+\[
+5 - 5.9\theta = 0.
+\]
+Therefore the maximum likelihood estimator of $\theta$ is $\hat{\theta} = \frac{50}{59}$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+% =============================================================
+
+\begin{definition}
+Let $A \in \mathbb{R}^{n \times n}$ be a symmetric matrix. We say that $A$ is
+\textbf{positive definite} if $\forall x\in \mathbb{R}^n \mid x \neq \vec{0},\ x^\top Ax >
+0$. Similarly, we say that $A$ is \textbf{positive semidefinite} if $\forall x
+\in \mathbb{R}^n,\ x^\top Ax \geq 0$.
+\end{definition}
+
+\bigskip
+
+\begin{question}[3: Positive Definiteness]
+~
+
+Let $x = \begin{bmatrix}x_1 & \cdots & x_n\end{bmatrix}^\top \in \mathbb{R}^n$,
+and let $A \in \mathbb{R}^{n \times n}$ be the square matrix
+\begin{equation*}
+A = \begin{bmatrix}
+  a_{11} & a_{12} & \cdots & a_{1n} \\
+  a_{21} & a_{22} & \cdots & a_{2n} \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  a_{n1} & a_{n2} & \cdots & a_{nn}
+\end{bmatrix}
+\end{equation*}
+
+\begin{itemize}
+\item[(a)] Give an explicit formula for $x^\top A x$. Write your answer as a sum
+  involving the elements of $A$ and $x$.
+\item[(b)] Show that if $A$ is positive definite, then the entries on the
+  diagonal of $A$ are positive (that is, $a_{ii} > 0$ for all
+  $1 \leq i \leq n$).
+\end{itemize}
+\end{question}
+\textbf{Solution:}
+%%%%%%%%%% Write your solution to Problem 3a here %%%%%%%%%%%%%%%%%%%%
+(a) 
+
+\begin{align*}
+x^\top Ax &= \begin{bmatrix}x_1 & \cdots & x_n\end{bmatrix} \begin{bmatrix}
+  a_{11} & a_{12} & \cdots & a_{1n} \\
+  a_{21} & a_{22} & \cdots & a_{2n} \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  a_{n1} & a_{n2} & \cdots & a_{nn}
+\end{bmatrix}  \begin{bmatrix}x_1 & \cdots & x_n\end{bmatrix}^\top\\
+&= \begin{bmatrix} \sum_{i=1}^n x_ia_{i1} & \sum_{i=1}^n x_ia_{i2} & \cdots &  \sum_{i=1}^n x_ia_{in}
+\end{bmatrix} \begin{bmatrix}x_1 & \cdots & x_n\end{bmatrix}^\top\\
+&= \sum_{j=1}^n \sum_{i=1}^n x_ix_ja_{ij}
+\end{align*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 3b here %%%%%%%%%%%%%%%%%%%%
+(b)
+
+For $\forall i \in [n]$, consider a n-dimensional unit $i$th coordinate vector $z = \begin{bmatrix} z_1 & z_2 & \cdots & z_n\end{bmatrix}^\top $, where 
+\[ z_k =
+  \begin{cases}
+   1 & k = i \\
+   0 &  \text{otherwise}.
+  \end{cases}
+\]
+Then
+\[
+z^\top A z  =   \sum_{j=1}^n \sum_{i=1}^n z_iz_ja_{ij} = a_{ii} > 0.
+\]
+This is due to the result from previous problem and the assumption that $z_j = 0$ for $j \neq i$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+% =============================================================
+
+\begin{question}[4: Short Proofs]
+~
+
+$A$ is symmetric in all parts.
+\begin{itemize}
+\item[(a)]
+Let $A$ be a positive semidefinite matrix. Show that $A + \gamma I$ is positive
+definite for any $\gamma > 0$.
+\item[(b)]
+Let $A$ be a positive definite matrix. Prove that all eigenvalues of $A$ are greater than zero.
+\item[(c)]
+Let $A$ be a positive definite matrix. Prove that $A$ is invertible. (Hint: Use the previous part.)
+\item[(d)]
+Let $A$ be a positive definite matrix. Prove that there exist $n$ linearly independent vectors $x_{1}, x_{2}, ..., x_{n}$
+such that $A_{ij} = x_{i}^{\top}x_{j}$. (Hint: Use the
+\href{https://inst.eecs.berkeley.edu/~ee127a/book/login/l_sym_sed.html}{\underline{spectral
+    theorem}} and what you proved in (b) to find a matrix $B$ such that $A = B^{\top}B$.)
+\end{itemize}
+\end{question}
+\textbf{Solution:}
+%%%%%%%%%% Write your solution to Problem 4a here %%%%%%%%%%%%%%%%%%%%
+(a) For any non-zero vector $x \in \mathbb{R}^n$
+\[
+x^\top (A + \gamma I) x = x^\top A x + x^\top x > 0 ,
+\]
+because $x^\top A x \ge 0$ and $x^\top x > 0$  $(x \neq \vec{0})$. This proves that $A + \gamma I$ is positive definite for any $\gamma > 0$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 4b here %%%%%%%%%%%%%%%%%%%%
+(b) If $\lambda$ is an eigenvalue of $A$, then there exists a nonzero vector $y \in \mathbb{R}$ such that $Ay = \lambda y$. Then
+\[
+y^\top A y = y^\top (Ay) = y^\top (\lambda y) = \lambda y^\top y > 0,
+\]
+because $A$ is assumed to be positive definite. Since $y^\top y > 0$, this implies that $\lambda > 0$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 4c here %%%%%%%%%%%%%%%%%%%%
+(c) Let $\lambda_1, \lambda_2, \cdots, \lambda_n$ be all the eigenvalues of $A$ and $u_1, u_2, \cdots, u_n$ be the corresponding unit eigenvectors of $A$. It is known from previous problem that all eigenvalues $\lambda_1, \lambda_2, \cdots, \lambda_n$ are strictly positive. By Spectral theorem, 
+\[
+A = U\Lambda U^\top,
+\]
+where $U = \begin{bmatrix}u_1&  u_2&\cdots &u_n\end{bmatrix}$ is orthogonal and $\Lambda = diag(\lambda_1, \lambda_2, \cdots, \lambda_n).$ Consider a new matrix $B = UDU^\top$ where $D = diag(\frac{1}{\lambda_1}, \frac{1}{\lambda_2}, \cdots, \frac{1}{\lambda_n}) (\lambda_i > 0 $). Then
+\begin{align*}
+AB &= U\Lambda U^\top \, UDU^\top = U \Lambda D U^\top = UU^\top = I\\
+BA &= UD U^\top \,  U\Lambda U^\top = U D \Lambda U^\top = UU^\top = I.
+\end{align*}
+Here we used the fact that $UU^\top = D\Lambda = \Lambda D = I$. This demonstrates that $B$ is the inverse matrix of $A$ and therefore A is invertible. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 4d here %%%%%%%%%%%%%%%%%%%%
+(d) With $\Lambda, U$ that we defined in the solution for previous problem, $A = U\Lambda U^\top$. Define $\Lambda^{\frac{1}{2}}$ as $diag(\sqrt{\lambda_1}, \sqrt{\lambda_2}, \cdots, \sqrt{\lambda_n})$; $B$ as $\Lambda^{\frac{1}{2}}U^\top$; and $x_i$ as the $i$th column vector of $B$ for $i \in [n]$. Then $A = B^\top B = \begin{bmatrix} x_1& x_2 & \cdots & x_n\end{bmatrix}^\top  \begin{bmatrix} x_1& x_2 & \cdots & x_n\end{bmatrix}$ and element-wise computation gives the desired result that $A_{ij} = x_i^\top x_j$ for all $i,j \in [n]$. Additionally, because $B = \Lambda^{\frac{1}{2}}U^\top$,  $x_i = \lambda_i v_i$  where $v_i$ is the $i$th column vector of $U^\top$.  Since $U^\top U = UU^\top = I$ and therefore $U^\top$ is invertible, its column vector $v_i$'s are linearly independent. This implies that $x_i$'s are also linearly independent because $x_i$ is a constant multiple of $v_i$ for all $i \in [n]$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+% =============================================================
+
+\begin{question}[5: Derivatives and Norm Inequalities]
+~
+
+Derive the expression for following questions. Do not write the answers directly.
+\begin{itemize}
+\item[(a)] Let $\textbf{x}, \textbf{a} \in \R^n$. Derive
+  $\frac{\partial \left(\textbf{x}^T\textbf{a}\right)}{\partial \textbf{x}}$.
+\item[(b)] Let $\textbf{A} \in \R^{n \times n}, \textbf{x} \in \R^n$.
+  Derive
+  $\frac{\partial \left(\textbf{x}^T\textbf{A}\textbf{x} \right)}{\partial
+    \textbf{x}}$.
+\item[(c)] Let $\textbf{A}, \textbf{X} \in \R^{n\times n}$. Derive
+  $\frac{\partial \text{Trace(\textbf{XA})}}{\partial \textbf{X}}$.
+\item[(d)] Let $\textbf{x}\in \R^n$. Prove that
+  $\|\textbf{x}\|_2 \leq \|\textbf{x}\|_1 \leq \sqrt{n}\|\textbf{x}\|_2$. (Note
+  that $\|\textbf{x}\|_2=\sqrt{\sum_{i=1}^{n} x_i^2}$ and
+  $\|\textbf{x}\|_1=\sum_{i=1}^{n} |x_i|$.) (Hint: The Cauchy-Schwarz inequality may come in handy.)
+\end{itemize}
+\end{question}
+\textbf{Solution:}
+%%%%%%%%%% Write your solution to Problem 5a here %%%%%%%%%%%%%%%%%%%%
+(a) Let $\textbf{x} =\begin{bmatrix} x_1 & x_2 & \cdots & x_n\end{bmatrix}^\top$  and $\textbf{a} =\begin{bmatrix} a_1 & a_2 & \cdots & a_n\end{bmatrix}^\top$, then $x^\top a = \sum_{i=1}^n x_i a_i$. Therefore, 
+\[
+\frac{\partial \left(\textbf{x}^T\textbf{a}\right)}{\partial \textbf{x}} = \begin{bmatrix} a_1 & a_2 & \cdots & a_n\end{bmatrix} = \textbf{a}.
+\]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 5b here %%%%%%%%%%%%%%%%%%%%
+
+(b)
+\[
+\textbf{x}^\top A \textbf{x} = \sum_{i=1}^n \sum_{j=1}^n A_{ij}x_i x_j.
+\]
+Therefore,
+\[
+\frac{\partial \left(\textbf{x}^T\textbf{A}\textbf{x} \right)}{\partial
+    x_i} = \sum_{j=1, j \neq i}^n A_{ij}x_j + 2A_{ii}x_i + \sum_{j=1, j \neq i}^n A_{ji}x_j = \sum_{j=1}^n A_{ij}x_j + \sum_{j=1}^n A_{ji}x_j
+\]
+for all $i \in [n]$. 
+Writing this result in matrix notation, 
+\[
+\frac{\partial \left(\textbf{x}^T\textbf{A}\textbf{x} \right)}{\partial
+    \textbf{x}} = A\textbf{x} + A^\top \textbf{x}.
+\]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 5c here %%%%%%%%%%%%%%%%%%%%
+(c)
+\[
+ \text{Trace(\textbf{XA})} = \sum_{i=1}^n \sum_{k=1}^n X_{ik}A_{ki}.
+\]
+Therefore, 
+\[
+\frac{\partial \text{Trace(\textbf{XA})}}{\partial X_{ij}} = A_{ji}, \,\, \text{ for all } j,i \in [n].
+\]
+It follows that  $\frac{\partial \text{Trace(\textbf{XA})}}{\partial \textbf{X}} = A$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 5d here %%%%%%%%%%%%%%%%%%%%
+(d)
+\[
+\|\textbf{x}\|_2^2 = \sum_{i=1}^{n} x_i^2  \leq  \sum_{i=1}^{n} x_i^2  + \sum_{i=1}^n \sum_{j=1, j \neq i}^n |x_i| |x_j| = \|\textbf{x}\|_1^2.
+\]
+Taking square roots proves the desired result that $\|\textbf{x}\|_2 \leq \|\textbf{x}\|_1$.
+By Cauchy-Schwarz ineqaulity,
+\[
+\|\textbf{x}\|_1^2 = (\sum_{i=1}^n |x_i|)^2 \leq (\sum_{i=1}^n 1)(\sum_{i=1}^n |x_i|^2) = n \|\textbf{x}\|_2^2.
+\]
+Taking square roots proves the desired result that $\|\textbf{x}\|_1 \leq \sqrt{n}\|\textbf{x}\|_2$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+% =============================================================
+
+\begin{question}[6: Weighted Linear Regression]
+~
+
+Let \textbf{X} be a $n\times d$ data matrix, $\textbf{Y}$ be the corresponding
+$n\times 1$ target/label matrix and $\boldsymbol{\Lambda}$ be the diagonal
+$n\times n$ matrix containing a weight for each example. More explicitly, we
+have
+
+\begin{minipage}{\textwidth}
+\hfill
+$\textbf{X} = \left[ \begin{matrix} (\textbf{x}^{(1)})^T \\
+    (\textbf{x}^{(2)})^T \\ \dots \\ (\textbf{x}^{(n)})^T \end{matrix}
+\right]$
+\hfill
+$\textbf{Y} = \left[ \begin{matrix} \textbf{y}^{(1)} \\ \textbf{y}^{(2)} \\
+    \dots \\ \textbf{y}^{(n)} \end{matrix} \right]$
+\hfill
+$\boldsymbol{\Lambda} = \text{diag}(\lambda^{(1)},\lambda^{(2)},\dots,\lambda^{(n)})$
+\hspace{5em}
+\end{minipage}
+
+where $\textbf{x}^{(i)} \in \mathbb{R}^d$, $\textbf{y}^{(i)} \in \mathbb{R}$,
+and $\lambda^{(i)} > 0$
+$\;\;\forall\;\;i\in\{1\dots n\}$. \textbf{X}, \textbf{Y} and $\boldsymbol{\Lambda}$ are fixed and known.
+
+In this question, we will try to fit a weighted linear regression model for this
+data. We want to find the value of weight vector $\textbf{w}$ which best
+satisfies the following equation
+$\textbf{y}^{(i)}=\textbf{w}^T\textbf{x}^{(i)}+\epsilon^{(i)}$, where $\epsilon$
+is noise. This is achieved by minimizing the weighted noise for all the
+examples. Thus, our risk (cost) function is defined as follows:
+\begin{align*}
+  R[\textbf{w}] &= \sum_{i=1}^{n} \lambda^{(i)}(\epsilon^{(i)})^2\\
+                &= \sum_{i=1}^{n} \lambda^{(i)}(\textbf{w}^T\textbf{x}^{(i)}-\textbf{y}^{(i)})^2
+\end{align*}
+\begin{itemize}
+\item[(a)] Write this risk function $R[\textbf{w}]$ in matrix notation (i.e., in
+  terms of \textbf{X}, \textbf{Y}, $\boldsymbol{\Lambda}$ and \textbf{w}).
+\item[(b)] Find the weight vector \textbf{w} that minimizes the risk function
+  obtained in the previous part. You can assume that
+  $\textbf{X}^T\boldsymbol{\Lambda}\textbf{X}$ is full rank. (Hint: You may use
+  the expression you derived in Question 5(b).)
+\medskip
+\item[(c)] The $L_2$ regularized risk function, for $\gamma>0$, is
+  \begin{align*}
+    R[\textbf{w}] &= \sum_{i=1}^{n} \lambda^{(i)}(\textbf{w}^T\textbf{x}^{(i)}-\textbf{y}^{(i)})^2 + \gamma \|\textbf{w}\|^2_2
+  \end{align*}
+  Rewrite this new risk function in matrix notation as in (a) and solve for
+  \textbf{w} as in (b).
+\item[(d)] How does $\gamma$ affect the regression model? How does this fit in
+  with what you already know about $L_2$ regularization? (Hint: Observe
+  the different expressions for $\textbf{w}$ obtained in (b) and (c).)
+\end{itemize}
+\end{question}
+\textbf{Solution:}
+%%%%%%%%%% Write your solution to Problem 6a here %%%%%%%%%%%%%%%%%%%%
+(a) \[
+(\textbf{Xw} - \textbf{Y})^\top \Lambda (\textbf{Xw} - \textbf{Y}) = \textbf{w}^\top \textbf{X}^\top \textbf{Xw} - \textbf{Y}^\top \textbf{Xw} -\textbf{w}^\top \textbf{X}^\top \textbf{Y} + \textbf{Y}^\top \textbf{Y}
+\]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 6b here %%%%%%%%%%%%%%%%%%%%
+(b) By the solution for Problem 5,
+\begin{align*}
+\frac{\partial (\textbf{Xw} - \textbf{Y})^\top \Lambda (\textbf{Xw} - \textbf{Y})}{\partial \textbf{w}} = 2\textbf{X}^\top \textbf{X} \textbf{w} -2\textbf{X}^\top \textbf{Y} 
+ \end{align*}
+ It follows that the $\textbf{w}$ that minimizes the risk is $\hat{\textbf{w}}$ satisfying that 
+ \[
+ \frac{\partial (\textbf{Xw} - \textbf{Y})^\top \Lambda (\textbf{Xw} - \textbf{Y})}{\partial \textbf{w}} = 2\textbf{X}^\top \textbf{X} \textbf{w} -2\textbf{X}^\top \textbf{Y}  = 0.
+ \]
+ As a result $\hat{\textbf{w}} = (\textbf{X}^\top \textbf{X})^{-1} \textbf{X}^\top \textbf{Y}.$ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 6c here %%%%%%%%%%%%%%%%%%%%
+
+(c) The new risk function in matrix notation is written in matrix notation as follows;
+\[
+R[\textbf{w}] = (\textbf{Xw} - \textbf{Y})^\top \Lambda (\textbf{Xw} - \textbf{Y}) + \gamma \textbf{w}^\top \textbf{w} = \textbf{w}^\top \textbf{X}^\top \textbf{Xw} - \textbf{Y}^\top \textbf{Xw} -\textbf{w}^\top \textbf{X}^\top \textbf{Y} + \textbf{Y}^\top \textbf{Y} + \gamma \textbf{w}^\top \textbf{w}.
+\]
+\[
+\frac{\partial R[\textbf{w}]}{\partial \textbf{w}} = 2\textbf{X}^\top \textbf{X} \textbf{w} -2\textbf{X}^\top \textbf{Y}  + 2 \gamma \textbf{w}.
+\]
+Therefore the $\textbf{w}$ that minimizes the risk is $\hat{\textbf{w}}$ satisfying that 
+\[
+\frac{\partial R[\textbf{w}]}{\partial \textbf{w}} = 2\textbf{X}^\top \textbf{X} \textbf{w} -2\textbf{X}^\top \textbf{Y}  + 2 \gamma \textbf{w}=0.
+\]
+In other words,  $\hat{\textbf{w}} = (\textbf{X}^\top \textbf{X} + \gamma I )^{-1} \textbf{X}^\top \textbf{Y}. $
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 6d here %%%%%%%%%%%%%%%%%%%%
+(d) When $\gamma$ is negligibly small, then the estimator for this new risk would be very similar to the estimator for square error. If $\gamma$ is large, then the model strongly penalizes a large $L_2$ norm of the coefficient vector $\textbf{w}$, preventing the model from exhibitng high variance. Also, the solution adds a positive constant to the diagonal of $\textbf{X}^\top \textbf{X}$ before inversion. As we derived from problem 5(a), this makes the problem nonsingular, even if $\textbf{X}^\top \textbf{X}$ is not of full rank. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+% =============================================================
+
+\begin{question}[7: Classification]
+~
+
+Suppose we have a classification problem with classes labeled $1, \dotsc, c$ and
+an additional doubt category labeled as $c+1$. Let the loss function be the
+following:\\
+\[
+\ell(f(x) = i, y = j) =
+  \begin{cases}
+   0 &  \mathrm{if}\ i=j \quad i,j\in\{1,\dotsc,c\} \\
+   \lambda_r       & \mathrm{if}\ i=c+1 \\
+   \lambda_s       & \text{otherwise}
+  \end{cases}
+\]
+where $\lambda_r$ is the loss incurred for choosing doubt and $\lambda_s$ is the
+loss incurred for making a misclassification. Note that $\lambda_r \ge 0$ and
+$\lambda_s \ge 0$.
+
+Hint: The risk of classifying a new datapoint as class $i\in\{1,2,\dots,c+1\}$
+is $$R(\alpha_i|x) = \sum_{j=1}^{c} \ell(f(x) = i, y = j) P(\omega_j|x)$$
+
+\begin{itemize}
+\item[(a)] Show that the minimum risk is obtained if we follow this policy: (1)
+  choose class~$i$ if $P(\omega_i|x) \geq P(\omega_j|x)$ for all $j$ and
+  $P(\omega_i|x) \geq 1-\lambda_r/\lambda_s$, and (2) choose doubt otherwise.
+\item[(b)] What happens if $\lambda_r=0$? What happens if $\lambda_r>\lambda_s$? Is this consistent with your intuition?
+\end{itemize}
+\end{question}
+\textbf{Solution:}
+%%%%%%%%%% Write your solution to Problem 7a here %%%%%%%%%%%%%%%%%%%%
+(a)
+\[
+R(\alpha_i|x) = \sum_{j=1}^{c} \ell(f(x) = i, y = j) P(\omega_j|x) = 
+\begin{cases} 
+\lambda_s \sum_{j=1, j \neq i}^{c+1} P(\omega_j | x)&  i \in \{1,2,\cdots, c \} \\
+ \lambda_r & i = c+1
+\end{cases}
+\]
+
+Therefore for $i,k \in \{1,2, \cdots, c \}$, 
+\[
+R(\alpha_i|x) \leq R(\alpha_k|x)
+\]
+ if and only if  (erasing common terms)
+ \[ 
+ \lambda_s P(\omega_k|x) \leq \lambda_s P(\omega_i|x),
+ \]
+ in other words $P(\omega_k|x) \leq P(\omega_i|x)$. Also comparing the risk of choosing a class $i$ and doubt 
+for $i \in \{1,2, \cdots,c\}$, 
+\[
+R(\alpha_i|x) \leq R(\alpha_{c+1}|x)
+\] 
+if and only if 
+\[
+\lambda_s \sum_{j=1, j \neq i}^{c+1} P(\omega_j | x) \leq \lambda_r.
+\] In other words $\lambda_s (1- P(\omega_{i}|x)) \leq \lambda_r $, or $P(\omega_i|x) \geq 1-\lambda_r/\lambda_s$. To obtain minimum risk, we should choose class $i$ when $P(\omega_k|x) \leq P(\omega_i|x)$ for all $k$ in $\{1,2, \cdots, c\}$ and $P(\omega_i|x) \geq 1-\lambda_r/\lambda_s$; and choose doubt otherwise.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 7b here %%%%%%%%%%%%%%%%%%%%
+(b)
+\begin{itemize}
+\item  If $\lambda_r = 0$, then according to the policy derived in previous problem, we should choose class $i$ if $P(\omega_i|x) = 1$; and choose doubt otherwise. \\
+This is consistent with intuition because if we don't lose anything from choosing doubt then we always wanna choose doubt unless there is the only one class where x could belong to(with probability 1).
+\item  If $\lambda_s < \lambda_r$, then choose $i$ if $P(\omega_i |x) = \max_{k \in \{ 1,2,\cdots,c \}} P(\omega_k |x)$; and never choose doubt.\\
+Again this is consistent with intuition because if the loss from choosing doubt is strictly greater than the loss from choosing an incorrect class, and therefore to minimize the loss we will avoid choosing doubt and will choose the class with highest conditional probability.
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+% =============================================================
+\begin{question}[8: Gaussians]
+~
+
+Let $P(x \mid \omega_i) \sim \mathcal{N}(\mu_i,\sigma^2)$ for a two-category, one-dimensional classification problem with $P(\omega_1)=P(\omega_2)=1/2$. Here, the classes are $\omega_{1}$ and $\omega_{2}$. For this problem, we have $\mu_{2} \geq \mu_{1}$.
+\begin{itemize}
+\item[(a)] Find the optimal Bayes decision boundary (i.e., find $x$ such that $P(\omega_{1} \mid x) = P(\omega_{2} \mid x)$). What is the corresponding decision rule?
+\item[(b)] Show that the Bayes error associated with this decision rule is
+\begin{equation*}
+P_e=\frac{1}{\sqrt{2\pi}}\int_{a}^{\infty} e^{-z^{2}/2}dz
+\end{equation*}
+where $a=\dfrac{\mu_2 - \mu_1}{2\sigma}$. The Bayes error is the probability of misclassification: $$P_{e} = P((\text{misclassified as }\omega_{1}) \mid \omega_{2}) P(\omega_{2}) + P((\text{misclassified as }\omega_{2}) \mid \omega_{1}) P(\omega_{1}).$$
+\end{itemize}
+\end{question}
+\textbf{Solution:}
+%%%%%%%%%% Write your solution to Problem 8a here %%%%%%%%%%%%%%%%%%%%
+
+\begin{align*}
+P(\omega_i|x) &= \frac{P(x|\omega_i) \cdot \frac{1}{2}}{P(x|\omega_1) \cdot \frac{1}{2} + P(x|\omega_2) \cdot \frac{1}{2}}\\
+& = \frac{\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu_i)^2}{2\sigma^2}}}
+{\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu_1)^2}{2\sigma^2}}+ \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu_2)^2}{2\sigma^2}}}\\
+&= \frac{e^{-\frac{(x-\mu_i)^2}{2\sigma^2}}}
+{e^{-\frac{(x-\mu_1)^2}{2\sigma^2}}+ e^{-\frac{(x-\mu_2)^2}{2\sigma^2}}}
+\end{align*}
+Therefore,
+\[
+P(\omega_1|x) = P(\omega_2|x)
+\]
+if and only if (canceling common denominator and comparing exponents)
+\[
+ -\frac{(x-\mu_1)^2}{2\sigma^2} = -\frac{(x-\mu_2)^2}{2\sigma^2}.
+\]
+Equivalently,
+\[
+(x-\mu_1)^2 = (x-\mu_2)^2.
+\]
+Since this tells that $x$ is equidistant from $\mu_1$ and $\mu_2$, or $x = \frac{\mu_1 +\mu_2}{2}$. As a result, the corresponding decision rule is to choose
+\[
+\begin{cases}
+\omega_1 &  \text{if } x < \frac{\mu_1 +\mu_2}{2},\\
+\omega_2 & \text{if }  x \ge \frac{\mu_1 +\mu_2}{2}.\\
+\end{cases}
+\]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%% Write your solution to Problem 8b here %%%%%%%%%%%%%%%%%%%%
+the Bayes error associated with this decision rule is
+\begin{align*}
+P_{e} &= P((\text{misclassified as }\omega_{1}) \mid \omega_{2}) P(\omega_{2}) + P((\text{misclassified as }\omega_{2}) \mid \omega_{1}) P(\omega_{1})\\
+& =\int_{-\infty}^{\frac{\mu_1 +\mu_2}{2}} \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu_2)^2}{2\sigma^2}} dx \cdot \frac{1}{2} + \int_{\frac{\mu_1+ \mu_2}{2}}^\infty  \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu_1)^2}{2\sigma^2}} dx \cdot \frac{1}{2}\\
+& = \int_{\frac{\mu_2-\mu_1}{2\sigma}}^{\infty}  \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}} dz  \cdot \frac{1}{2}+ \int_{\frac{\mu_2-\mu_1}{2\sigma}}^{\infty} \frac{1}{\sqrt{2 \pi}} e^{-\frac{z^2}{2}} dz \cdot \frac{1}{2} \\
+&\text{(used the change of variable: $z = \frac{-(x-\mu_2)}{2}$ for the first integral, $z = \frac{(x-\mu_1)}{2}$ for the second)}\\
+& = \int_{\frac{\mu_2-\mu_1}{2\sigma}}^{\infty}  \frac{1}{\sqrt{2\pi}} e^{-\frac{z^2}{2}} dz .
+ \end{align*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
